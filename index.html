@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexusBank | Advanced FSM Core</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -48,7 +46,7 @@
                 <!-- Hardware Mockup UI -->
                 <div class="dynamic-island"></div>
                 <div class="status-bar">
-                    <span class="time" id="clock">12:00</span>
+                    <span class="time" id="clock">16:46</span>
                     <div class="icons"><i class="ri-signal-cellular-3-fill"></i> <i class="ri-wifi-fill"></i> <i class="ri-battery-fill"></i></div>
                 </div>
 
@@ -118,6 +116,27 @@
             </div>
         </main>
 
+        <div class="receipt-modal hidden" id="receipt-modal" role="dialog" aria-modal="true">
+            <div class="receipt-card">
+                <div class="receipt-badge">NXB</div>
+                <p class="receipt-kicker">Comprobante de transferencia</p>
+                <h3 id="receipt-title">Transferencia enviada</h3>
+                <p class="receipt-recipient" id="receipt-recipient">—</p>
+                <div class="receipt-amount" id="receipt-amount">$0.00</div>
+                <div class="receipt-meta">
+                    <div>
+                        <span>De</span>
+                        <strong id="receipt-sender">—</strong>
+                    </div>
+                    <div>
+                        <span>Hora</span>
+                        <strong id="receipt-time">—</strong>
+                    </div>
+                </div>
+                <button type="button" id="btn-close-receipt" class="btn-secondary">Cerrar</button>
+            </div>
+        </div>
+
         <!-- ==========================================
              COLUMNA 3: MONITOR FSM & TERMINAL
         =========================================== -->
@@ -153,11 +172,11 @@
                     <div class="mac-title">TERMINAL DE EVENTOS</div>
                     <button id="btn-clear-logs" class="btn-icon-small" title="Limpiar Consola"><i class="ri-delete-bin-line"></i></button>
                 </div>
-                <div class="terminal-container custom-scrollbar" id="terminal"></div>
+                <div class="terminal-container custom-scrollbar" id="terminal"><div class="log-line log-system"><span class="log-time">[21:44:37.451]</span> Arquitectura cargada. Entorno listo para operar.</div></div>
             </div>
         </aside>
     </div>
 
     <script src="script.js"></script>
-</body>
-</html>
+
+</body></html>
