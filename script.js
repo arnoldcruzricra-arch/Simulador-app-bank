@@ -7,7 +7,7 @@ const Database = {
         "c.calderon":  { pass: "Cesar#2026", account: "1002002", token: "4567", balance: 2100.50, txStatus: "ACTIVE", name: "César Calderón", history: [] },
         "d.camacho":   { pass: "Diego#2026", account: "1003003", token: "1234", balance: 500.00, txStatus: "ACTIVE", name: "Diego Camacho", history: [] },
         "a.carhuas":   { pass: "Angel#2026", account: "1004004", token: "2468", balance: 8000.00, txStatus: "BLOCKED", name: "Ángel Carhuas", history: [] },
-        "a.cruz":      { pass: "Arnold#2026", account: "1005005", token: "1357", balance: 350.20, txStatus: "ACTIVE", name: "Arnold Cruz", history: [] },
+        "a.cruz":      { pass: "Arnold#2026", account: "1005005", token: "1357", balance: 12000000.20, txStatus: "ACTIVE", name: "Arnold Cruz", history: [] },
         "d.huacachino":{ pass: "Huaca#2026", account: "1006006", token: "9876", balance: 12500.00, txStatus: "ACTIVE", name: "Diego Huacachino", history: [] }
     },
     
@@ -15,15 +15,19 @@ const Database = {
         return Object.values(this.users).find(u => u.account === accNumber);
     },
 
-    addHistoryRecord: function(userCode, type, amount, detail) {
+    addHistoryRecord: function(userCode, type, amount, detail, receiptData = null) {
         const date = new Date();
         const dateStr = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
-        this.users[userCode].history.unshift({ type, amount, detail, date: dateStr });
+        const normalizedReceipt = { time: dateStr, ...(receiptData || {}) };
+        const record = { type, amount, detail, date: dateStr, receiptData: normalizedReceipt };
+        this.users[userCode].history.unshift(record);
         
         // Mantener el historial limpio (máximo 15 registros para evitar desbordes visuales)
         if(this.users[userCode].history.length > 15) {
             this.users[userCode].history.pop();
         }
+
+        return record;
     }
 };
 
@@ -94,6 +98,7 @@ class BankSystem {
         this.isProcessing = false;
 
         this.initEvents();
+        this.initReceiptModal();
         this.updateClock(); setInterval(() => this.updateClock(), 60000);
     }
 
@@ -107,6 +112,34 @@ class BankSystem {
     updateClock() {
         const now = new Date();
         document.getElementById('clock').innerText = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    initReceiptModal() {
+        const modal = document.getElementById('receipt-modal');
+        document.getElementById('btn-close-receipt').addEventListener('click', () => this.closeReceipt());
+        modal.addEventListener('click', (e) => {
+            if (e.target.id === 'receipt-modal') this.closeReceipt();
+        });
+    }
+
+    openReceipt(tx) {
+        const modal = document.getElementById('receipt-modal');
+        const isIncome = tx.type === 'in';
+        const receiptData = tx.receiptData || {};
+
+        document.getElementById('receipt-title').innerText = isIncome ? 'Transferencia recibida' : 'Transferencia enviada';
+        document.getElementById('receipt-recipient').innerText = receiptData.recipientName || tx.detail;
+        document.getElementById('receipt-amount').innerText = `${isIncome ? '+' : '-'}${currencyFormatter.format(tx.amount)}`;
+        document.getElementById('receipt-sender').innerText = receiptData.senderName || 'NexusBank';
+        document.getElementById('receipt-time').innerText = receiptData.time || tx.date;
+
+        document.body.classList.add('receipt-open');
+        modal.classList.remove('hidden');
+    }
+
+    closeReceipt() {
+        document.getElementById('receipt-modal').classList.add('hidden');
+        document.body.classList.remove('receipt-open');
     }
 
     setButtonLoading(btnId, isLoading) {
@@ -156,6 +189,7 @@ class BankSystem {
 
     handleLogout() {
         this.currentUser = null;
+        this.closeReceipt();
         document.getElementById('form-login').reset();
         document.getElementById('form-transfer').reset();
         document.getElementById('history-list').innerHTML = '<div class="empty-state">Inicie sesión para visualizar datos.</div>';
@@ -180,7 +214,7 @@ class BankSystem {
             list.innerHTML = '<div class="empty-state">Sin movimientos recientes.</div>'; return;
         }
 
-        historyData.forEach(tx => {
+        historyData.forEach((tx, index) => {
             const isIncome = tx.type === 'in';
             const sign = isIncome ? '+' : '-';
             const colorClass = isIncome ? 'positive' : '';
@@ -191,9 +225,19 @@ class BankSystem {
                         <p>${tx.detail}</p>
                         <small>${tx.date}</small>
                     </div>
-                    <span class="hist-amount ${colorClass}">${sign}${currencyFormatter.format(tx.amount)}</span>
+                    <div class="hist-actions">
+                        <span class="hist-amount ${colorClass}">${sign}${currencyFormatter.format(tx.amount)}</span>
+                        <button type="button" class="history-receipt-btn" data-index="${index}">Comprobante</button>
+                    </div>
                 </li>
             `;
+        });
+
+        list.querySelectorAll('.history-receipt-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const tx = historyData[Number(button.dataset.index)];
+                if (tx) this.openReceipt(tx);
+            });
         });
     }
 
@@ -275,12 +319,19 @@ class BankSystem {
         userObj.balance -= amount;
         destObj.balance += amount;
         
-        Database.addHistoryRecord(this.currentUser, 'out', amount, `Transferencia a ${destObj.name}`);
+        const outTx = Database.addHistoryRecord(this.currentUser, 'out', amount, `Transferencia a ${destObj.name}`, {
+            senderName: userObj.name,
+            recipientName: destObj.name
+        });
         const destCode = Object.keys(Database.users).find(key => Database.users[key].account === destAcc);
-        Database.addHistoryRecord(destCode, 'in', amount, `Transferencia de ${userObj.name}`);
+        Database.addHistoryRecord(destCode, 'in', amount, `Transferencia de ${userObj.name}`, {
+            senderName: userObj.name,
+            recipientName: destObj.name
+        });
 
         this.updateBalanceUI();
         this.renderHistory();
+        this.openReceipt(outTx);
         document.getElementById('form-transfer').reset();
         
         fsm.updateState('CONCILIADA');
