@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusBank | Advanced FSM Core</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Fondo dinámico sutil -->
+    <div class="bg-glow"></div>
+
+    <div id="toast-container"></div>
+
+    <div class="layout-grid">
+        
+        <!-- ==========================================
+             COLUMNA 1: RED E HISTORIAL BANCARIO
+        =========================================== -->
+        <aside class="left-panel">
+            <div class="dev-panel network-compact glass-panel">
+                <div class="network-header">
+                    <div class="pulse-dot"></div>
+                    <span>Red FSM: <span class="text-success">Latencia 45ms</span></span>
+                </div>
+            </div>
+
+            <div class="dev-panel history-panel glass-panel">
+                <div class="panel-header">
+                    <h2><i class="ri-history-line"></i> Movimientos</h2>
+                </div>
+                <div class="history-content custom-scrollbar">
+                    <ul id="history-list">
+                        <div class="empty-state">Inicie sesión para visualizar datos.</div>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ==========================================
+             COLUMNA 2: ENTORNO DEL USUARIO (APP)
+        =========================================== -->
+        <main class="app-environment">
+            <div class="smartphone-mockup">
+                <!-- Hardware Mockup UI -->
+                <div class="dynamic-island"></div>
+                <div class="status-bar">
+                    <span class="time" id="clock">12:00</span>
+                    <div class="icons"><i class="ri-signal-cellular-3-fill"></i> <i class="ri-wifi-fill"></i> <i class="ri-battery-fill"></i></div>
+                </div>
+
+                <!-- VISTA: LOGIN -->
+                <section id="view-login" class="app-screen active">
+                    <div class="brand-header">
+                        <div class="logo-container">
+                            <div class="logo"><i class="ri-bank-card-fill"></i></div>
+                            <div class="logo-glow"></div>
+                        </div>
+                        <h1>NexusBank</h1>
+                        <p>Core Bancario FSM</p>
+                    </div>
+
+                    <form id="form-login" class="modern-form">
+                        <div class="input-group">
+                            <i class="ri-user-3-line icon"></i>
+                            <input type="text" id="login-user" placeholder="Usuario (Ej. c.calderon)" autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <i class="ri-lock-password-line icon"></i>
+                            <input type="password" id="login-pass" placeholder="Contraseña">
+                        </div>
+                        <button type="submit" id="btn-login" class="btn-primary mt-4">
+                            <span class="btn-text">Iniciar Sesión</span>
+                            <div class="spinner hidden"></div>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- VISTA: DASHBOARD -->
+                <section id="view-dashboard" class="app-screen">
+                    <header class="dash-header">
+                        <div class="user-info">
+                            <p class="greeting">Bienvenido, <span id="current-user-name" class="fw-600"></span></p>
+                            <h2 class="balance" id="ui-balance">$0.00</h2>
+                            <p class="balance-label">Saldo Disponible</p>
+                        </div>
+                        <button id="btn-logout" class="btn-icon"><i class="ri-logout-box-r-line"></i></button>
+                    </header>
+
+                    <div class="action-card glass-card empty-space-optimizer">
+                        <h3><i class="ri-send-plane-fill"></i> Enviar Dinero</h3>
+                        <form id="form-transfer" class="modern-form">
+                            <div class="input-group">
+                                <i class="ri-bank-line icon"></i>
+                                <input type="text" id="transfer-dest" placeholder="N° Cuenta Destino" autocomplete="off">
+                            </div>
+                            <div class="input-group">
+                                <i class="ri-money-dollar-circle-line icon"></i>
+                                <input type="number" id="transfer-amount" placeholder="Monto ($)" min="1" step="0.01">
+                            </div>
+                            <div class="input-group">
+                                <i class="ri-shield-keyhole-line icon"></i>
+                                <input type="password" id="transfer-pin" placeholder="Token de 4 dígitos">
+                            </div>
+                            <button type="submit" id="btn-transfer" class="btn-primary mt-2">
+                                <span class="btn-text">Autorizar Transferencia</span>
+                                <div class="spinner hidden"></div>
+                            </button>
+                            <button type="button" id="btn-concurrency" class="btn-danger mt-1">
+                                <i class="ri-bug-line"></i> Simular Concurrencia
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ==========================================
+             COLUMNA 3: MONITOR FSM & TERMINAL
+        =========================================== -->
+        <aside class="right-panel">
+            <!-- Barra FSM Horizontal -->
+            <div class="dev-panel fsm-horizontal glass-panel">
+                <div class="fsm-row">
+                    <div class="node active" id="st-CREADA">CREADA</div>
+                    <div class="fsm-connector"><div class="line"></div><i class="ri-arrow-right-s-line"></i></div>
+                    
+                    <div class="node" id="st-VALIDANDO">VALIDANDO</div>
+                    <div class="fsm-connector"><div class="line"></div><i class="ri-arrow-right-s-line"></i></div>
+                    
+                    <div class="node" id="st-APROBADA">APROBADA</div>
+                    <div class="fsm-connector"><div class="line"></div><i class="ri-arrow-right-s-line"></i></div>
+                    
+                    <div class="node final-node approved" id="st-CONCILIADA">CONCILIADA</div>
+                </div>
+                
+                <div class="fsm-error-row">
+                    <div class="node final-node rejected" id="st-RECHAZADA">RECHAZADA (Estado Terminal)</div>
+                </div>
+            </div>
+
+            <!-- Terminal Prominente Estilo Mac -->
+            <div class="dev-panel console-panel prominent glass-panel">
+                <div class="mac-window-header">
+                    <div class="mac-controls">
+                        <span class="dot close"></span>
+                        <span class="dot min"></span>
+                        <span class="dot max"></span>
+                    </div>
+                    <div class="mac-title">TERMINAL DE EVENTOS</div>
+                    <button id="btn-clear-logs" class="btn-icon-small" title="Limpiar Consola"><i class="ri-delete-bin-line"></i></button>
+                </div>
+                <div class="terminal-container custom-scrollbar" id="terminal"></div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

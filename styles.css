@@ -1,0 +1,210 @@
+/* =========================================================
+   VARIABLES & COLOR PALETTE (Premium Dark Theme)
+========================================================= */
+:root {
+    --bg-base: #060913;
+    --bg-surface: rgba(17, 24, 39, 0.7);
+    --bg-surface-elevated: rgba(31, 41, 55, 0.8);
+    
+    --brand-primary: #3b82f6; 
+    --brand-primary-hover: #2563eb;
+    --brand-accent: #60a5fa;
+    
+    --semantic-success: #10b981; 
+    --semantic-success-bg: rgba(16, 185, 129, 0.15);
+    --semantic-error: #f43f5e; 
+    --semantic-error-bg: rgba(244, 63, 94, 0.15);
+    --semantic-warn: #fbbf24;
+    
+    --text-primary: #f8fafc; 
+    --text-secondary: #94a3b8; 
+    --text-tertiary: #475569;
+    
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(255, 255, 255, 0.15);
+    
+    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+/* FIX DE PROPORCIONES 100%: Forzamos a la pantalla a no generar scroll exterior */
+body { 
+    background-color: var(--bg-base); 
+    color: var(--text-primary); 
+    height: 100vh; 
+    width: 100vw;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    overflow: hidden; 
+    position: relative;
+    padding: 2vh 2vw; /* Espaciado relativo */
+}
+
+/* Fondo Ambiental Radial */
+.bg-glow { position: absolute; top: -20%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+
+/* FIX GRID: Uso de minmax() para absorber el tamaño restante y ajustarse a la pantalla */
+.layout-grid { 
+    display: grid; 
+    grid-template-columns: minmax(280px, 1fr) minmax(320px, 360px) minmax(350px, 1.5fr); 
+    gap: 1.5rem; 
+    width: 100%; 
+    height: 96%; /* Usa casi toda la altura disponible sin desbordar */
+    max-width: 1600px; 
+    z-index: 1;
+}
+
+/* =========================================================
+   PANELES GLASSMORPHISM
+========================================================= */
+.glass-panel { background: var(--bg-surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-soft); border-radius: 20px; }
+.dev-panel { padding: 20px; display: flex; flex-direction: column; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 15px; }
+.panel-header h2 { font-size: 1rem; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;}
+.panel-header h2 i { color: var(--brand-accent); }
+
+/* Custom Scrollbar (WebKit) */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--text-tertiary); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* =========================================================
+   COLUMNA 1: RED E HISTORIAL
+========================================================= */
+.left-panel { display: flex; flex-direction: column; gap: 1rem; height: 100%; }
+.network-compact { padding: 15px 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.network-header { display: flex; align-items: center; gap: 10px; }
+.pulse-dot { width: 8px; height: 8px; background-color: var(--semantic-success); border-radius: 50%; box-shadow: 0 0 10px var(--semantic-success); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+.text-success { color: var(--semantic-success); }
+.history-panel { flex: 1; overflow: hidden; padding-bottom: 15px;}
+.history-content { flex: 1; overflow-y: auto; padding-right: 8px; margin-right: -8px;}
+.history-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.history-item { background: var(--bg-surface-elevated); padding: 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-subtle); transition: transform 0.2s, background 0.2s; }
+.history-item:hover { transform: translateY(-2px); background: rgba(255,255,255,0.05); }
+.history-item.in { border-left: 4px solid var(--semantic-success); }
+.history-item.out { border-left: 4px solid var(--text-tertiary); }
+.hist-details p { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;}
+.hist-details small { font-size: 0.7rem; color: var(--text-secondary); }
+.hist-amount { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.9rem; }
+.hist-amount.positive { color: var(--semantic-success); }
+.empty-state { font-size: 0.85rem; color: var(--text-tertiary); text-align: center; margin-top: 20px; }
+
+/* =========================================================
+   COLUMNA 2: APP MÓVIL (Escalabilidad corregida)
+========================================================= */
+.app-environment { display: flex; justify-content: center; align-items: center;}
+
+/* FIX: El celular ahora usa el 100% de la altura de la columna y ajusta su interior flex */
+.smartphone-mockup { 
+    width: 100%; 
+    height: 100%; 
+    background-color: #000; 
+    border-radius: 45px; 
+    border: 10px solid #1a202c; 
+    box-shadow: inset 0 0 0 2px #374151, 0 30px 60px -12px rgba(0,0,0,0.8); 
+    display: flex; 
+    flex-direction: column; 
+    position: relative; 
+    overflow: hidden;
+}
+
+/* Dynamic Island */
+.dynamic-island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 100px; height: 28px; background: #000; border-radius: 20px; z-index: 20; box-shadow: inset 0 0 2px rgba(255,255,255,0.2); }
+.status-bar { display: flex; justify-content: space-between; padding: 15px 25px 8px; font-size: 0.8rem; font-weight: 600; z-index: 10; color: white;}
+
+/* Pantallas de la App */
+.app-screen { flex: 1; display: none; flex-direction: column; padding: 20px; animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: linear-gradient(180deg, #0f172a 0%, #020617 100%); overflow-y: auto;}
+.app-screen.active { display: flex; }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+
+/* UI Interna App */
+.brand-header { text-align: center; margin: 25px 0; position: relative;}
+.logo-container { position: relative; width: 64px; height: 64px; margin: 0 auto 15px; }
+.logo { width: 100%; height: 100%; background: var(--brand-primary); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: white; position: relative; z-index: 2;}
+.logo-glow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--brand-primary); filter: blur(15px); opacity: 0.6; z-index: 1;}
+.brand-header h1 { font-size: 1.4rem; letter-spacing: -0.5px; margin-bottom: 2px;}
+.brand-header p { color: var(--text-secondary); font-size: 0.85rem;}
+
+.modern-form { display: flex; flex-direction: column; gap: 12px; }
+.input-group { position: relative; display: flex; align-items: center; }
+.input-group .icon { position: absolute; left: 14px; color: var(--text-tertiary); font-size: 1.2rem; }
+.input-group input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 14px 14px 45px; color: var(--text-primary); font-size: 0.9rem; transition: 0.3s;}
+.input-group input:focus { border-color: var(--brand-accent); background: rgba(255,255,255,0.06); outline: none; }
+
+button { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+.btn-primary { background: var(--brand-primary); color: white; box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);}
+.btn-primary:hover:not(:disabled) { background: var(--brand-primary-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.23);}
+.btn-danger { background: transparent; border: 1px solid var(--semantic-error); color: var(--semantic-error); font-size: 0.85rem;}
+.btn-danger:hover:not(:disabled) { background: var(--semantic-error-bg); }
+.btn-icon { background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: var(--text-primary); width: 38px; height: 38px; border-radius: 50%; }
+.btn-icon:hover { background: rgba(255,255,255,0.1); }
+
+.dash-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; margin-top: 10px;}
+.greeting { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;}
+.fw-600 { font-weight: 600; color: white;}
+.balance { font-size: 2.2rem; font-weight: 700; margin: 0 0 2px 0; letter-spacing: -1px;}
+.balance-label { font-size: 0.7rem; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+.glass-card { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 20px; border: 1px solid var(--border-subtle); margin-top: auto; margin-bottom: 10px;}
+.glass-card h3 { font-size: 0.95rem; margin-bottom: 15px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;}
+
+.spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+.hidden { display: none !important; }
+.mt-1 { margin-top: 5px; } .mt-2 { margin-top: 10px; } .mt-4 { margin-top: 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================================================
+   COLUMNA 3: MONITOR FSM & TERMINAL MAC OS
+========================================================= */
+.right-panel { display: flex; flex-direction: column; gap: 1rem; height: 100%; }
+
+/* Barra FSM Horizontal Proporcional */
+.fsm-horizontal { padding: 20px; }
+.fsm-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%;}
+.fsm-connector { flex-grow: 1; display: flex; align-items: center; padding: 0 8px; color: var(--text-tertiary); opacity: 0.5;}
+.fsm-connector .line { height: 2px; flex-grow: 1; background-color: var(--text-tertiary); }
+.fsm-connector i { font-size: 1.2rem; margin-left: -4px; }
+
+.node { background: rgba(0,0,0,0.3); border: 2px solid var(--text-tertiary); padding: 8px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; color: var(--text-tertiary); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-align: center; white-space: nowrap; z-index: 2;}
+.node.active { background: var(--bg-surface-elevated); border-color: var(--brand-accent); color: var(--brand-accent); box-shadow: var(--shadow-glow); transform: scale(1.05); }
+
+.fsm-error-row { display: flex; justify-content: center; }
+.final-node { border-radius: 25px; border-width: 3px; }
+.final-node.approved.active { border-color: var(--semantic-success); color: var(--semantic-success); background: var(--semantic-success-bg); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+.final-node.rejected.active { border-color: var(--semantic-error); color: var(--semantic-error); background: var(--semantic-error-bg); box-shadow: 0 0 15px rgba(244, 63, 94, 0.3);}
+
+/* Terminal Mac OS Style */
+.console-panel.prominent { flex: 1; padding: 0; overflow: hidden; border: 1px solid var(--border-highlight); display: flex; flex-direction: column;}
+.mac-window-header { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 10px 15px; 
+    background: rgba(0,0,0,0.4); 
+    border-bottom: 1px solid var(--border-subtle); 
+    flex-shrink: 0;
+    gap: 15px; /* Obliga a mantener una separación con los botones */
+}
+.mac-controls { display: flex; gap: 6px; }
+.mac-controls .dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.close { background: #ff5f56; } .dot.min { background: #ffbd2e; } .dot.max { background: #27c93f; }
+.mac-title { font-family: 'Inter', sans-serif; font-size: 0.90rem; color: var(--text-secondary); font-weight: 500; }
+.btn-icon-small { background: transparent; border: none; color: var(--text-tertiary); cursor: pointer; transition: 0.2s; font-size: 1rem;}
+.btn-icon-small:hover { color: var(--text-primary); }
+
+.terminal-container { flex: 1; padding: 15px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; line-height: 1.6; background: #000; }
+.log-line { margin-bottom: 4px; } 
+.log-time { color: #6b7280; margin-right: 8px; }
+.log-info { color: #93c5fd; } .log-success { color: #34d399; } .log-error { color: #fb7185; } .log-warn { color: #fbbf24; } .log-system { color: #c084fc; font-weight: bold; }
+
+/* Toasts Notificaciones */
+#toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-left: 4px solid var(--brand-primary); color: white; padding: 14px 20px; border-radius: 10px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 15px 25px -5px rgba(0,0,0,0.5); transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s; }
+.toast.show { transform: translateX(0); }
+.toast.error { border-left-color: var(--semantic-error); } .toast.success { border-left-color: var(--semantic-success); } .toast.warn { border-left-color: var(--semantic-warn); }
+.toast i { font-size: 1.2rem; }
